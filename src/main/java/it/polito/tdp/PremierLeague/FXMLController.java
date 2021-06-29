@@ -5,10 +5,12 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Battuto;
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -46,7 +48,7 @@ public class FXMLController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	double g = 0.0;
+    	double g;
     	
     	try {
     		g = Double.parseDouble(txtGoals.getText());
@@ -62,7 +64,28 @@ public class FXMLController {
 
     @FXML
     void doDreamTeam(ActionEvent event) {
+    	txtResult.clear();
+    	if(this.model.getGrafo() == null) {
+    		txtResult.appendText("Crea prima il grafo!");
+    		return;
+    	}
+    	
+    	int k;
 
+    	try {
+    		k = Integer.parseInt(txtK.getText());
+    	} catch (NumberFormatException e) {
+    		txtResult.appendText("Inserire un numero intero valido!");
+    		return;
+    	}
+    	
+    	List<Player> dreamTeam = this.model.getDreamTeam(k);
+    	int grado = this.model.getBestGrado();
+    	
+    	txtResult.appendText("DREAM TEAM - grado di titolarità: " + grado + "\n\n");
+    	
+    	for(Player p : dreamTeam)
+    		txtResult.appendText(p.toString() + "\n");
     }
 
     @FXML
@@ -73,8 +96,7 @@ public class FXMLController {
     		return;
     	}
     	
-    	txtResult.appendText("TOP PLAYER: " + this.model.getTopPlayer().getPlayer().toString() + "\n");
-    	txtResult.appendText("\n");
+    	txtResult.appendText("TOP PLAYER: " + this.model.getTopPlayer().getPlayer().toString() + "\n\n");
     	txtResult.appendText("AVVERSARI BATTUTI:\n");
     	
     	for(Battuto b : this.model.getTopPlayer().getBattuti())
